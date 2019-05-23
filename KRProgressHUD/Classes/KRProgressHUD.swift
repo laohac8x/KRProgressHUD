@@ -65,6 +65,7 @@ public enum KRProgressHUDStyle {
 /// KRProgressHUD is a beautiful and easy-to-use progress HUD.
 public final class KRProgressHUD {
     public typealias CompletionHandler = () -> Void
+    public typealias DismissHandler = () -> Void
 
     public class KRProgressHUDAppearance {
         /// Default style.
@@ -93,7 +94,7 @@ public final class KRProgressHUD {
     }
 
     static let shared = KRProgressHUD()
-
+    
     let viewAppearance = KRProgressHUDAppearance()
 
     let window = UIWindow(frame: UIScreen.main.bounds)
@@ -130,6 +131,8 @@ public final class KRProgressHUD {
     private init() {
         configureProgressHUDView()
     }
+    
+    var dismissCallback: DismissHandler?
 }
 
 // MARK: - Set styles --------------------------
@@ -270,7 +273,8 @@ extension KRProgressHUD {
     /// The HUD dismiss after `duration` secound.
     ///
     /// - Parameter message: HUD's message.
-    public static func showSuccess(withMessage message: String? = nil) {
+    public static func showSuccess(withMessage message: String? = nil, dismissHandler handler: DismissHandler? = nil) {
+        shared.dismissCallback = handler
         shared.show(withMessage: message, iconType: .success)
     }
 
@@ -278,7 +282,8 @@ extension KRProgressHUD {
     /// The HUD dismiss after `duration` secound.
     ///
     /// - Parameter message: HUD's message.
-    public static func showInfo(withMessage message: String? = nil) {
+    public static func showInfo(withMessage message: String? = nil, dismissHandler handler: DismissHandler? = nil) {
+        shared.dismissCallback = handler
         shared.show(withMessage: message, iconType: .info)
     }
 
@@ -286,7 +291,8 @@ extension KRProgressHUD {
     /// The HUD dismiss after `duration` secound.
     ///
     /// - Parameter message: HUD's message.
-    public static func showWarning(withMessage message: String? = nil) {
+    public static func showWarning(withMessage message: String? = nil, dismissHandler handler: DismissHandler? = nil) {
+        shared.dismissCallback = handler
         shared.show(withMessage: message, iconType: .warning)
     }
 
@@ -294,7 +300,8 @@ extension KRProgressHUD {
     /// The HUD dismiss after `duration` secound.
     ///
     /// - Parameter message: HUD's message.
-    public static func showError(withMessage message: String? = nil) {
+    public static func showError(withMessage message: String? = nil, dismissHandler handler: DismissHandler? = nil) {
+        shared.dismissCallback = handler
         shared.show(withMessage: message, iconType: .error)
     }
 
@@ -305,7 +312,7 @@ extension KRProgressHUD {
     ///   - image: Image that display instead of activity indicator.
     ///   - size: Image size.
     ///   - message: HUD's message.
-    public static func showImage(_ image: UIImage, size: CGSize? = nil, message: String? = nil) {
+    public static func showImage(_ image: UIImage, size: CGSize? = nil, message: String? = nil, dismissHandler handler: DismissHandler? = nil) {
         shared.show(withMessage: message, image: image, imageSize: size)
     }
 
@@ -313,7 +320,8 @@ extension KRProgressHUD {
     /// The HUD dismiss after `duration` secound.
     ///
     /// - Parameter message: HUD's message.
-    public static func showMessage(_ message: String) {
+    public static func showMessage(_ message: String, dismissHandler handler: DismissHandler? = nil) {
+        shared.dismissCallback = handler
         shared.show(withMessage: message, isOnlyText: true)
     }
 

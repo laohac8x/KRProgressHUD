@@ -141,7 +141,10 @@ extension KRProgressHUD {
 
     func registerDismissHandler() {
         dismissHandler = DispatchWorkItem { [unowned self] in
-            KRProgressHUD.dismiss()
+            KRProgressHUD.dismiss({
+                self.dismissCallback?()
+                self.dismissCallback = nil
+            })
             _ = self.cancelCurrentDismissHandler()
         }
         let duration = DispatchTime.now() + (self.duration ?? viewAppearance.duration)
