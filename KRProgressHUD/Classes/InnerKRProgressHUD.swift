@@ -86,9 +86,9 @@ extension KRProgressHUD {
         }
     }
 
-    func dismiss(completion: CompletionHandler?) {
+    func dismiss(animated: Bool = false, completion: CompletionHandler?) {
         DispatchQueue.main.async { [unowned self] in
-            self.fadeOutView(completion: completion)
+            self.fadeOutView(animated: animated, completion: completion)
         }
     }
 }
@@ -141,7 +141,7 @@ extension KRProgressHUD {
 
     func registerDismissHandler() {
         dismissHandler = DispatchWorkItem { [unowned self] in
-            KRProgressHUD.dismiss({
+            KRProgressHUD.dismiss(animated: true, {
                 self.dismissCallback?()
                 self.dismissCallback = nil
             })
@@ -174,10 +174,22 @@ extension KRProgressHUD {
         })
     }
 
-    func fadeOutView(completion: CompletionHandler?) {
-        UIView.animate(withDuration: fadeTime, animations: { [unowned self] in
+    func fadeOutView(animated: Bool = false, completion: CompletionHandler?) {
+        if animated {
+            UIView.animate(withDuration: fadeTime, animations: { [unowned self] in
+                self.hudViewController.view.alpha = 0
+                }, completion: { [unowned self] _ in
+                    self.appWindow?.makeKeyAndVisible()
+                    self.appWindow = nil
+                    self.window.isHidden = true
+                    self.hudViewController.view.removeFromSuperview()
+                    self.presentingViewController = nil
+                    self.activityIndicatorView.stopAnimating()
+                    KRProgressHUD.isVisible = false
+                    completion?()
+            })
+        } else {
             self.hudViewController.view.alpha = 0
-        }, completion: { [unowned self] _ in
             self.appWindow?.makeKeyAndVisible()
             self.appWindow = nil
             self.window.isHidden = true
@@ -186,7 +198,7 @@ extension KRProgressHUD {
             self.activityIndicatorView.stopAnimating()
             KRProgressHUD.isVisible = false
             completion?()
-        })
+        }
     }
 
     func applyStyles() {

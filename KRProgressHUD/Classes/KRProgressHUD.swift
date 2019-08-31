@@ -335,7 +335,7 @@ extension KRProgressHUD {
     /// Hides the HUD.
     ///
     /// - Parameter completion: Hide completion handler.
-    public static func dismiss(_ completion: CompletionHandler? = nil) {
-        shared.dismiss(completion: completion)
+    public static func dismiss(animated: Bool = false, _ completion: CompletionHandler? = nil) {
+        shared.dismiss(animated: animated, completion: completion)
     }
 }
